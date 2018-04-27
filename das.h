@@ -47,6 +47,7 @@ namespace das
     enum PIN_MODE {
         INPUT = 0, OUTPUT, INPUT_PULLUP
     };
+    const int NUM_DEAMON_THREADS = 3;
 
     /**
         Simulation of Arduino uC32 - Basic IO Shield, used for educational purposes.
@@ -83,9 +84,16 @@ namespace das
         };
 
         // fields
-        bool m_bPins[MAX_UC32_BASIC_IO_PIN + 1];
-        PIN_MODE m_PinModes[MAX_UC32_BASIC_IO_PIN + 1];
+        std::atomic<bool> m_bPins[MAX_UC32_BASIC_IO_PIN + 1];
+        std::atomic<PIN_MODE> m_PinModes[MAX_UC32_BASIC_IO_PIN + 1];
         sRectangleObject m_swModel, m_btnModel, m_ledModel;
+
+        const int THREAD_INPUT_ID = 0, THREAD_LOOP_ID = 1, THREAD_OUTPUT_ID = 2;
+        std::atomic<int> m_activeThread;
+        std::atomic<int> m_readyThreads[NUM_DEAMON_THREADS];
+        condition_variable m_cvDeamonThreads[NUM_DEAMON_THREADS];
+        condition_variable m_cvScheduler;
+        mutex m_muxPin;
     private:
         /** 
             @note: Set 'm_bLearningMode' to off if you don't wish to be thrown unecessary exceptions
@@ -116,15 +124,101 @@ namespace das
             m_btnModel.set(5, 5);
             m_ledModel.set(4, 8);
 
+            m_activeThread = -1;
+            for (int i = 0; i < NUM_DEAMON_THREADS; ++i) {
+                m_readyThreads[i] = 0;
+            }
+
             executeSoftReset(RUN_SKETCH_ON_BOOT);
             setup();
+
+            thread{ [&]() {HandleInput(); } }.detach();
+            thread{ [&]() {HandleLoop(); } }.detach();
+            thread{ [&]() {HandleOutput(); } }.detach();
+
             return true;
         }
         virtual bool OnUserUpdate(float fElapsedTime) override
         {
+            Scheduler();
+
+            return true;
+        }
+        void Scheduler() 
+        {
+            unique_lock<mutex> ulock(m_muxPin);
+            while (1) 
+            {
+                m_activeThread = modRobin(m_activeThread + 1);
+                if (m_readyThreads[m_activeThread] > 0) {
+                    m_cvDeamonThreads[m_activeThread].notify_one();
+                    m_cvScheduler.wait(ulock);
+                }
+            }
+
+        }
+        const int TESTING_WAIT_TIME = 100;
+        void HandleInput() 
+        {
+            unique_lock<mutex> ulock(m_muxPin);
+            while (1) 
+            {
+                do 
+                {
+                    ++m_readyThreads[THREAD_INPUT_ID];
+                    m_cvDeamonThreads[THREAD_INPUT_ID].wait(ulock);
+                    --m_readyThreads[THREAD_INPUT_ID];
+                } while (m_activeThread != THREAD_INPUT_ID);
+
+                HandleKeyboardInput();
+                //HandleMouseInput();
+                HandleInputChipKit();
+
+                m_cvScheduler.notify_one();
+
+            }
+        }
+        void HandleOutput() 
+        {
+            unique_lock<mutex> ulock(m_muxPin);
+            while (1) 
+            {
+                do
+                {
+                    ++m_readyThreads[THREAD_OUTPUT_ID];
+                    m_cvDeamonThreads[THREAD_OUTPUT_ID].wait(ulock);
+                    --m_readyThreads[THREAD_OUTPUT_ID];
+                } while (m_activeThread != THREAD_OUTPUT_ID);
+
+                DrawChipKIT();
+                UpdateScreen();
+
+                m_cvScheduler.notify_one();
+            }
+        }
+        void HandleLoop() 
+        {
+            unique_lock<mutex> ulock(m_muxPin);
+            while (1) 
+            {
+                do
+                {
+                    ++m_readyThreads[THREAD_LOOP_ID];
+                    m_cvDeamonThreads[THREAD_LOOP_ID].wait(ulock);
+                    --m_readyThreads[THREAD_LOOP_ID];
+                } while (m_activeThread != THREAD_LOOP_ID);
+
+                ulock.unlock();
+                loop();
+                ulock.lock();
+
+                m_cvScheduler.notify_one();
+            }
+        }
+        void HandleInputChipKit() {
             // HANDLE INPUT
             if (m_keys[VK_ESCAPE].bReleased == true) {
-                return false;
+                exit(EXIT_SUCCESS);
             }
 
             for (int i = 1; i <= NUM_SW; ++i) {
@@ -144,16 +238,31 @@ namespace das
                     m_bPins[btnIndex(NUM_BTN - i)] = false;
                 }
             }
-
-            // USER FUNCTION
-            loop();
-            
-            // UPDATE SCREEN
-            DrawChipKIT();
-
-            return true;
         }
 
+        void delayTest(unique_lock<mutex>& ulock, unsigned int ms, const wchar_t* debugMsg) 
+        {
+            DrawString(0, m_activeThread, debugMsg);
+            UpdateScreen();
+
+            int thread_id = m_activeThread;
+            
+            ulock.unlock();
+            m_cvScheduler.notify_one();
+
+            this_thread::sleep_for(chrono::milliseconds(ms));
+            ulock.lock();
+            
+            while(m_activeThread != thread_id) {
+                ++m_readyThreads[thread_id];
+                m_cvDeamonThreads[thread_id].wait(ulock);
+                --m_readyThreads[thread_id];
+            }
+        }
+
+        int modRobin(int x, const int size = NUM_DEAMON_THREADS) {
+            return x >= size ? 0 : x;
+        }
         /**
             Helper function that allows me to iterate through sw pins in a loop
             by returning their actual value. (SW1 == swIndex(1))
@@ -277,13 +386,33 @@ namespace das
         int digitalRead(PIN pin) {
             return m_bPins[(int)pin] == true ? LOW : HIGH;
         }
-        void delay(unsigned int ms) 
+
+        /**
+            @note: this function will attempt to lock(m_muxPin), so if you already hold 
+            that mutex you will have to unlock it first before calling this function
+        */
+        void delay(unsigned int ms) {
+            delay(ms, nullptr);
+        }
+        void delay(unsigned int ms, const wchar_t* debug_msg) 
         {
-            // I need to optimize this to work a bit better
-            DrawChipKIT();
-            thread t([this](){ this->UpdateScreen(); });
-            std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-            t.join();
+            unique_lock<mutex> ulock(m_muxPin);
+            int thread_id = m_activeThread;
+
+            if (debug_msg != nullptr) {
+                DrawString(0, m_activeThread, debug_msg);
+            }
+            ulock.unlock();
+            m_cvScheduler.notify_one();
+
+            this_thread::sleep_for(chrono::milliseconds(ms));
+            ulock.lock();
+
+            while (m_activeThread != thread_id) {
+                ++m_readyThreads[thread_id];
+                m_cvDeamonThreads[thread_id].wait(ulock);
+                --m_readyThreads[thread_id];
+            }
         }
     
     };

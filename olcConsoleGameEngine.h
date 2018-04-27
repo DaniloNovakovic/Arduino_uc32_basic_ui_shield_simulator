@@ -612,6 +612,8 @@ private:
 		auto tp1 = chrono::system_clock::now();
 		auto tp2 = chrono::system_clock::now();
 
+        SetConsoleTitle(m_sAppName.c_str());
+
 		// Run as fast as possible
 		while (m_bAtomActive)
 		{				
@@ -622,116 +624,129 @@ private:
 			float fElapsedTime = elapsedTime.count();
 
 			// Handle Keyboard Input
-			for (int i = 0; i < 256; i++)
-			{
-				m_keyNewState[i] = GetAsyncKeyState(i);
-				
-				m_keys[i].bPressed = false;
-				m_keys[i].bReleased = false;
-
-				if (m_keyNewState[i] != m_keyOldState[i])
-				{
-					if (m_keyNewState[i] & 0x8000)
-					{
-						m_keys[i].bPressed = !m_keys[i].bHeld;
-						m_keys[i].bHeld = true;
-					}
-					else
-					{
-						m_keys[i].bReleased = true;
-						m_keys[i].bHeld = false;
-					}
-				}
-
-				m_keyOldState[i] = m_keyNewState[i];
-			}
+            //HandleKeyboardInput();
 
 			// Handle Mouse Input - Check for window events
-			INPUT_RECORD inBuf[32];
-			DWORD events = 0;
-			GetNumberOfConsoleInputEvents(m_hConsoleIn, &events);
-			if(events > 0)
-				ReadConsoleInput(m_hConsoleIn, inBuf, events, &events);
-
-			// Handle events - we only care about mouse clicks and movement
-			// for now
-			for (DWORD i = 0; i < events; i++)
-			{
-				switch (inBuf[i].EventType)
-				{
-					case MOUSE_EVENT:
-					{
-						switch (inBuf[i].Event.MouseEvent.dwEventFlags)
-						{
-							case MOUSE_MOVED:
-							{
-								m_mousePosX = inBuf[i].Event.MouseEvent.dwMousePosition.X;
-								m_mousePosY = inBuf[i].Event.MouseEvent.dwMousePosition.Y;
-							}
-							break;
-
-							case 0:
-							{
-								for (int m = 0; m < 5; m++)
-									m_mouseNewState[m] = (inBuf[i].Event.MouseEvent.dwButtonState & (1 << m)) > 0;
-			
-							}
-							break;
-
-							default:
-								break;
-						}																	
-					}
-					break;
-
-					default:
-						break;
-						// We don't care just at the moment
-				}
-			}
-
-			for (int m = 0; m < 5; m++)
-			{
-				m_mouse[m].bPressed = false;
-				m_mouse[m].bReleased = false;
-
-				if (m_mouseNewState[m] != m_mouseOldState[m])
-				{
-					if (m_mouseNewState[m])
-					{
-						m_mouse[m].bPressed = true;
-						m_mouse[m].bHeld = true;
-					}
-					else
-					{
-						m_mouse[m].bReleased = true;
-						m_mouse[m].bHeld = false;
-					}
-				}
-
-				m_mouseOldState[m] = m_mouseNewState[m];
-			}
-
+            //HandleMouseInput();
 
 			// Handle Frame Update
 			if (!OnUserUpdate(fElapsedTime))
 				m_bAtomActive = false;
 
 			// Update Title & Present Screen Buffer
-			wchar_t s[256];
-			swprintf_s(s, 256, L"%s - FPS: %3.2f - %d ", m_sAppName.c_str(), 1.0f / fElapsedTime, events);
-			SetConsoleTitle(s);
-			WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);
-		}
+			//wchar_t s[256];
+			//swprintf_s(s, 256, L"%s - FPS: %3.2f - %d ", m_sAppName.c_str(), 1.0f / fElapsedTime, events);
+			//SetConsoleTitle(s);
+			//WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);
+            
+            //UpdateScreen();
+        }
 
 		m_cvGameFinished.notify_one();
 	}
 protected:
-    void UpdateScreen() {
-        // Care not super safe or good, fix this later... - Choda
+    void HandleMouseInput()
+    {
+        unique_lock<mutex> ulock(m_muxGame);
+
+        INPUT_RECORD inBuf[32];
+        DWORD events = 0;
+        GetNumberOfConsoleInputEvents(m_hConsoleIn, &events);
+        if (events > 0)
+            ReadConsoleInput(m_hConsoleIn, inBuf, events, &events);
+
+        // Handle events - we only care about mouse clicks and movement
+        // for now
+        for (DWORD i = 0; i < events; i++)
+        {
+            switch (inBuf[i].EventType)
+            {
+            case MOUSE_EVENT:
+            {
+                switch (inBuf[i].Event.MouseEvent.dwEventFlags)
+                {
+                case MOUSE_MOVED:
+                {
+                    m_mousePosX = inBuf[i].Event.MouseEvent.dwMousePosition.X;
+                    m_mousePosY = inBuf[i].Event.MouseEvent.dwMousePosition.Y;
+                }
+                break;
+
+                case 0:
+                {
+                    for (int m = 0; m < 5; m++)
+                        m_mouseNewState[m] = (inBuf[i].Event.MouseEvent.dwButtonState & (1 << m)) > 0;
+
+                }
+                break;
+
+                default:
+                    break;
+                }
+            }
+            break;
+
+            default:
+                break;
+                // We don't care just at the moment
+            }
+        }
+
+        for (int m = 0; m < 5; m++)
+        {
+            m_mouse[m].bPressed = false;
+            m_mouse[m].bReleased = false;
+
+            if (m_mouseNewState[m] != m_mouseOldState[m])
+            {
+                if (m_mouseNewState[m])
+                {
+                    m_mouse[m].bPressed = true;
+                    m_mouse[m].bHeld = true;
+                }
+                else
+                {
+                    m_mouse[m].bReleased = true;
+                    m_mouse[m].bHeld = false;
+                }
+            }
+
+            m_mouseOldState[m] = m_mouseNewState[m];
+        }
+    }
+
+    void HandleKeyboardInput() 
+    {
+        unique_lock<mutex> ulock(m_muxGame);
+
+        for (int i = 0; i < 256; i++)
+        {
+            m_keyNewState[i] = GetAsyncKeyState(i);
+
+            m_keys[i].bPressed = false;
+            m_keys[i].bReleased = false;
+
+            if (m_keyNewState[i] != m_keyOldState[i])
+            {
+                if (m_keyNewState[i] & 0x8000)
+                {
+                    m_keys[i].bPressed = !m_keys[i].bHeld;
+                    m_keys[i].bHeld = true;
+                }
+                else
+                {
+                    m_keys[i].bReleased = true;
+                    m_keys[i].bHeld = false;
+                }
+            }
+
+            m_keyOldState[i] = m_keyNewState[i];
+        }
+    }
+    void UpdateScreen() 
+    {
         unique_lock<mutex> ulock(m_muxGame);
         WriteConsoleOutput(m_hConsole, m_bufScreen, { (short)m_nScreenWidth, (short)m_nScreenHeight }, { 0,0 }, &m_rectWindow);
-        
     }
 
 public:
