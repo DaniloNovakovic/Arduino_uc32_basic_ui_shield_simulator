@@ -6,6 +6,6 @@ and of course all in good old console!  :D Still work in progres...
 Which is basically only L01-L08, SW1-SW4, BTN1-BTN4. 
 
 Controls:
-- 1,2,3,4 - SW1, SW2, SW3, SW4 (on/off)
+- 1,2,3,4 - SW4, SW3, SW2, SW1 (on/off) (or SW1,SW2,SW3,SW4 (press F1 to swap between these))
 - Q,W,E,R - BTN4, BTN3, BTN2, BTN1 (hold to on, release to off)
 - LEDs are ordered in descending order from left to right L08,L07,...,L01	

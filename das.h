@@ -62,14 +62,17 @@ namespace das
         to call its constructor with different parameters.
 
         @author Danilo Novakoviæ
-        @version 0.1   4/25/2018
+        @version 0.4.1   4/29/2018
     */
-    class ArduinoSimulation_uC32 : protected olcConsoleGameEngine
+    class ArduinoSimulation_uC32 : private olcConsoleGameEngine
     {
     protected:
         // You MUST implement these!!!
         virtual void setup() = 0;
         virtual void loop() = 0;
+        void Start() {
+            olcConsoleGameEngine::Start();
+        }
     private:
         struct sRectangleObject
         {
@@ -215,31 +218,45 @@ namespace das
                 m_cvScheduler.notify_one();
             }
         }
-        void HandleInputChipKit() {
+        void HandleInputChipKit() 
+        {
             // HANDLE INPUT
-            if (m_keys[VK_ESCAPE].bReleased == true) {
+            if (m_keys[VK_ESCAPE].bReleased) {
                 exit(EXIT_SUCCESS);
             }
 
-            for (int i = 1; i <= NUM_SW; ++i) {
-                // keyboard nums 1-4 are reserved for SW flips (on-off)
-                if (m_keys[i + '0'].bReleased == true) {
-                    int index = swIndex(NUM_SW - i + 1);
-                    m_bPins[index] = !m_bPins[index];
+            static bool bToogledF1 = false;
+
+            if (m_keys[VK_F1].bReleased) {
+                bToogledF1 = !bToogledF1;
+            }
+
+            // keys 1,2,3,4 are reserved for SW1,SW2,SW3,SW4 (or SW4,SW3,SW2,SW1 based on bToogledF1)
+            for (int i = 1; i <= NUM_SW; ++i)
+            {
+                if (m_keys[i + '0'].bReleased) {
+                    int index = bToogledF1 == true ? swIndex(NUM_SW - i + 1) : swIndex(i);
+                    m_bPins[index].store(!m_bPins[index].load());
                 }
             }
 
-            for (int i = 0; i < NUM_BTN; ++i) {
-                // keyboard chars Q,W,E,R are reserved for BTN flips (on-off)
+            // keyboard chars Q,W,E,R are reserved for BTN flips (on-off)
+            for (int i = 0; i < NUM_BTN; ++i) 
+            {
                 if (m_keys["QWER"[i]].bHeld || m_keys["qwer"[i]].bHeld) {
-                    m_bPins[btnIndex(NUM_BTN - i)] = true;
+                    m_bPins[btnIndex(NUM_BTN - i)].store(true);
                 }
                 else {
-                    m_bPins[btnIndex(NUM_BTN - i)] = false;
+                    m_bPins[btnIndex(NUM_BTN - i)].store(false);
                 }
             }
         }
-
+    
+        /**
+            This function was used as prototype for "delay(unsigned int ms)" function that user will call.
+            Once i create new feature i experiment with delayTest function, and once i'm sure it works as intented
+            i then update delay(unsigned int ms) properly.
+        */
         void delayTest(unique_lock<mutex>& ulock, unsigned int ms, const wchar_t* debugMsg) 
         {
             DrawString(0, m_activeThread, debugMsg);
@@ -309,15 +326,24 @@ namespace das
         */
         void DrawChipKIT() 
         {
-            // Draw SW's 
             int y = 2, x = 1, i;
             static const int SPACE_BETWEEN_PINS(1);
             COLOUR colour;
+            PIXEL_TYPE type;
 
+            // Draw SW's 
             for (i = 1, x = 1; x < ScreenWidth() && i <= NUM_SW; ++i) 
             {
-                colour = m_bPins[swIndex(i)] == true ? FG_GREEN : FG_RED;
-                Fill(x, y, x + m_swModel.width, y + m_swModel.height, PIXEL_SOLID, colour);
+                if (m_bPins[swIndex(i)].load()) {
+                    colour = FG_GREEN;
+                    type = PIXEL_SOLID;
+                }
+                else {
+                    colour = FG_RED;
+                    type = PIXEL_HALF;
+                }
+
+                Fill(x, y, x + m_swModel.width, y + m_swModel.height, type, colour);
                 x += m_swModel.width + SPACE_BETWEEN_PINS;
             }
             y += m_swModel.height + SPACE_BETWEEN_PINS * 3;
@@ -325,7 +351,7 @@ namespace das
             // Draw BTNs
             for (i = 0, x = 1; x < ScreenWidth() && i < NUM_BTN; ++i) 
             {
-                PIXEL_TYPE type = m_bPins[btnIndex(NUM_BTN - i)] == true ? PIXEL_SOLID : PIXEL_QUARTER;
+                type = m_bPins[btnIndex(NUM_BTN - i)].load() == true ? PIXEL_SOLID : PIXEL_QUARTER;
                 Fill(x, y, x + m_btnModel.width, y + m_btnModel.height, type, FG_GREY);
                 x += m_btnModel.width + SPACE_BETWEEN_PINS;
             }
@@ -333,8 +359,16 @@ namespace das
             // Draw LEDs
             for (i = 0, x += m_btnModel.width; x < ScreenWidth() && i < NUM_LED; ++i) 
             {
-                colour = m_bPins[(int)PIN::L08 - i] == true ? FG_GREEN : FG_RED;
-                Fill(x, y, x + m_ledModel.width, y + m_ledModel.height, PIXEL_SOLID, colour);
+                if (m_bPins[(int)PIN::L08 - i].load()) {
+                    colour = FG_GREEN;
+                    type = PIXEL_SOLID;
+                }
+                else {
+                    colour = FG_RED;
+                    type = PIXEL_HALF;
+                }
+
+                Fill(x, y, x + m_ledModel.width, y + m_ledModel.height, type, colour);
                 x += m_ledModel.width + SPACE_BETWEEN_PINS;
             }
             
@@ -348,7 +382,7 @@ namespace das
         void executeSoftReset(uint32_t options) {
             if (options == RUN_SKETCH_ON_BOOT) {
                 for (int i = 0; i < MAX_UC32_BASIC_IO_PIN; ++i) {
-                    m_bPins[i] = false;
+                    m_bPins[i].store(false);
                 }
             }
             else if (options == ENTER_BOOTLOADER_ON_BOOT) {
@@ -361,8 +395,11 @@ namespace das
             @note: INPUT_PULLUP support is not yet implemented. 
             It doesn't do anything in this current state of simulation class.
         */
+        void pinMode(int pin, PIN_MODE mode) {
+            pinMode((PIN)pin, mode);
+        }
         void pinMode(PIN pin, PIN_MODE mode) {
-            m_PinModes[(int)pin] = mode;
+            m_PinModes[(int)pin].store(mode);
         }
         
         /**
@@ -371,20 +408,40 @@ namespace das
             calling this method. If it wasn't set on OUTPUT mode method will throw exception.
             (exception won't be thrown if m_bLearningMode is set to off)
         */
+        void digitalWrite(int pin, int value) {
+            if (pin < 0 || pin > MAX_UC32_BASIC_IO_PIN) {
+                wchar_t errBuff[100];
+                wsprintf(errBuff, L" \"int digitalWrite(%d)\" : argument \"%d\" is invalid!", pin, pin);
+                exit(Error(errBuff));
+            }
+            else {
+                digitalWrite((PIN)pin, value);
+            }
+        }
         void digitalWrite(PIN pin, int value) 
         {
-            if (m_bLearningMode && m_PinModes[(int)pin] != PIN_MODE::OUTPUT) 
+            if (m_bLearningMode && m_PinModes[(int)pin].load() != PIN_MODE::OUTPUT) 
             {
                 exit(Error(L"error: you called digital write on pin that had no OUTPUT mode set!"));
             }
-            m_bPins[(int)pin] = value > 0;
+            m_bPins[(int)pin].store(value > 0);
         }
 
         /**
             Reads the state of pin. (ON/OFF)
         */
+        int digitalRead(int pin) {
+            if (pin < 0 || pin > MAX_UC32_BASIC_IO_PIN) {
+                wchar_t errBuff[100];
+                wsprintf(errBuff, L" \"int digitalRead(%d)\" : argument \"%d\" is invalid!", pin, pin);
+                exit(Error(errBuff));
+            }
+            else {
+                return m_bPins[pin].load() == true ? HIGH : LOW;
+            }
+        }
         int digitalRead(PIN pin) {
-            return m_bPins[(int)pin] == true ? LOW : HIGH;
+            return m_bPins[(int)pin].load() == true ? HIGH : LOW;
         }
 
         /**
@@ -394,6 +451,12 @@ namespace das
         void delay(unsigned int ms) {
             delay(ms, nullptr);
         }
+
+    protected:
+        /**
+            @note: this version of delay can be used for debuging, although it is not supported by
+            Arduino (it is custom made)
+        */
         void delay(unsigned int ms, const wchar_t* debug_msg) 
         {
             unique_lock<mutex> ulock(m_muxPin);
