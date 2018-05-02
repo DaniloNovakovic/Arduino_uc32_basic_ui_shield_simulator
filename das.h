@@ -1,10 +1,15 @@
 #pragma once
 #include "olcConsoleGameEngine.h"
+#include <random>
+#include <algorithm>
 
 // Danilo's Arduino Simulation namespace 
 
 namespace das 
 {   
+    /**
+        Swaps variables with XOR (withouth bonus variable)
+    */
     void Swap(int &x, int &y) {
         x ^= y;
         y ^= x;
@@ -62,7 +67,7 @@ namespace das
         to call its constructor with different parameters.
 
         @author Danilo Novakoviæ
-        @version 0.4.1   4/29/2018
+        @version 0.4.2   5/2/2018
     */
     class ArduinoSimulation_uC32 : private olcConsoleGameEngine
     {
@@ -97,6 +102,8 @@ namespace das
         condition_variable m_cvDeamonThreads[NUM_DEAMON_THREADS];
         condition_variable m_cvScheduler;
         mutex m_muxPin;
+
+        chrono::steady_clock::time_point m_tpSimulationStarted;
     private:
         /** 
             @note: Set 'm_bLearningMode' to off if you don't wish to be thrown unecessary exceptions
@@ -131,6 +138,8 @@ namespace das
             for (int i = 0; i < NUM_DEAMON_THREADS; ++i) {
                 m_readyThreads[i] = 0;
             }
+
+            m_tpSimulationStarted = chrono::steady_clock::now();
 
             executeSoftReset(RUN_SKETCH_ON_BOOT);
             setup();
@@ -454,10 +463,10 @@ namespace das
 
     protected:
         /**
-            @note: this version of delay can be used for debuging, although it is not supported by
-            Arduino (it is custom made)
+        @note: this version of delay can be used for debuging, although it is not supported by
+        Arduino (it is custom made)
         */
-        void delay(unsigned int ms, const wchar_t* debug_msg) 
+        void delay(unsigned int ms, const wchar_t* debug_msg)
         {
             unique_lock<mutex> ulock(m_muxPin);
             int thread_id = m_activeThread;
@@ -477,6 +486,40 @@ namespace das
                 --m_readyThreads[thread_id];
             }
         }
+    public:
+        /**
+            Returns number less then 'howbig'
+        */
+        long random(long howbig)
+        {
+            if (howbig > 0) {
+                return random(0, howbig - 1);
+            }
+            return 0;
+        }
+
+        /**
+            Returns number from closed interval [howsmall, howbig]
+        */
+        long random(long howsmall, long howbig)
+        {
+            if (howsmall > howbig) {
+                std::swap(howsmall, howbig);
+            }
+            static default_random_engine generator((unsigned int) chrono::system_clock::now().time_since_epoch().count());
+            uniform_int_distribution<long> distribution(howsmall, howbig);
+            return distribution(generator);
+        }
+
+        /**
+            Returns number of milliseconds passed from the start of the simulation
+        */
+        long long millis()
+        {
+            auto timePassed = chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - m_tpSimulationStarted);
+            return timePassed.count();
+        }
+   
     
     };
     
