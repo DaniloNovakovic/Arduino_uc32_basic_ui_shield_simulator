@@ -1,3 +1,17 @@
+#UPDATE 5/25/2018
+- MAJOR update, i changed code almost completely. digitalRead, digitalWrite etc. are now functions instead of members.
+- Added Task support, optimized code a bit and fixed few bugs.
+ 
+TODO (plans for future): To recreate somehow digitalRead, digitalWrite to be more working-with-registers like instead
+of current simple bool mPins solution. But this will be work in future because i'm currently busy.
+-------------------------------------------------------------------------------------------------------
+What you need to do:
+- Now if you want to write code you are gonna write it in Simulation.cpp, i seperated it from everything else
+so that you can focus only on setup() and loop() functions, just like when coding in arduino
+
+--------------------------------------------------------------------------------------------------------------
+## BRIEF / GUIDE##
+
 In my school we are programming this semester in uC32 arduino, but i can't find that chipkit anywhere near me, 
 also i couln't find any simulators online, so i decided to make my own simulator, 
 and of course all in good old console!  :D Still work in progres...

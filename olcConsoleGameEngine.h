@@ -618,10 +618,12 @@ private:
 		while (m_bAtomActive)
 		{				
 			// Handle Timing
-			tp2 = chrono::system_clock::now();
+			/*tp2 = chrono::system_clock::now();
 			chrono::duration<float> elapsedTime = tp2 - tp1;
 			tp1 = tp2;
 			float fElapsedTime = elapsedTime.count();
+            */
+            static float fElapsedTime = 0;
 
 			// Handle Keyboard Input
             //HandleKeyboardInput();
