@@ -2,7 +2,7 @@
 The aim of this project is to help students who are learning Arduino, but unfortunately don't have money or are unable to find the hardware to learn on at home. With this simulator students can learn logic required for working with pins, switches, buttons and tasks. Output/Input/Loop are three separate detached tasks using logic which prevents common concurrent problems such as Data Race or Deadlock. This enables real-time response, which makes working with simulator feel like working with the real thing.
 
 ## Installing 
-- DOWNLOAD project from github (you can't copy-paste code from github.com site because it contains special
+- [DOWNLOAD](https://github.com/DaniloNovakovic/Arduino_uc32_basic_ui_shield_simulator/archive/master.zip) project from github (you can't copy-paste code from github.com site because it contains special
 invisible characters that will not allow your program to compile)
 
 - Create [Visual Studio 2017](https://visualstudio.microsoft.com/downloads/) C++ project and add these files to your project
