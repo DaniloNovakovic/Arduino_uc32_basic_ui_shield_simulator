@@ -5,20 +5,20 @@ The aim of this project is to help students who are learning Arduino, but unfort
 - DOWNLOAD project from github (you can't copy-paste code from github.com site because it contains special
 invisible characters that will not allow your program to compile)
 
-- Create Visual Studio 2017 C++ project and add these files to your project
+- Create [Visual Studio 2017](https://visualstudio.microsoft.com/downloads/) C++ project and add these files to your project
 
-- When compiling you will need to activate UNICODE support (Project Properties -> General -> \
-Character Set -> Use Unicode.). If you forget don't worry, you will get error/warning with adequate message.
+- When compiling you will need to activate **UNICODE** support (_Project Properties -> General -> \
+Character Set -> Use Unicode._). If you forget don't worry, you will get error/warning with adequate message.
 
 - If you get runtime exception upon runing your code, try:
-	a) Constructing Simulation class with different parameters (default is: int width = 80, int height = 40, int fontw = 8, int fonth = 10)
-	b) Changing your console window size in properties settings. (link how: https://youtu.be/xW8skO7MFYw?t=16m1s  (shown around 16. min mark)) 
+	- a) Constructing Simulation class with different parameters (default is: `int width = 80, int height = 40, int fontw = 8, int fonth = 10`)
+	- b) Changing your console window size in properties settings. (link how: https://youtu.be/xW8skO7MFYw?t=16m1s  (shown around 16. min mark)) 
 
 ## Usage
-- Now if you want to write code you are gonna write it in Simulation.cpp, i seperated it from everything else
-so that you can focus only on setup() and loop() functions, just like when coding in arduino
+- **You write code in _Simulation.cpp_ file**. It is seperated from everything else
+so that you can focus only on `setup()` and `loop()` functions, just like when coding in arduino
 
-> Note that i probably won't be making full simulator, i will only be making the stuff i need for school. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4. 
+> Note that i probably won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4. 
 
 - Controls:
 	- 1,2,3,4 - SW4, SW3, SW2, SW1 (on/off) (or SW1,SW2,SW3,SW4 (press F1 to swap between these))
