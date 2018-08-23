@@ -18,12 +18,11 @@ Character Set -> Use Unicode._). If you forget don't worry, you will get error/w
 - **You write code in _Simulation.cpp_ file**. It is seperated from everything else
 so that you can focus only on `setup()` and `loop()` functions, just like when coding in arduino
 
-> Note that i probably won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4. 
-
 - Controls:
 	- 1,2,3,4 - SW4, SW3, SW2, SW1 (on/off) (or SW1,SW2,SW3,SW4 (press F1 to swap between these))
 	- Q,W,E,R - BTN4, BTN3, BTN2, BTN1 (hold to on, release to off)
 	- LEDs are ordered in descending order from left to right L08,L07,...,L01	
 
+> Note that i probably won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4. 
 
 
