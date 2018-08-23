@@ -11,8 +11,8 @@ invisible characters that will not allow your program to compile)
 Character Set -> Use Unicode._). If you forget don't worry, you will get error/warning with adequate message.
 
 - If you get runtime exception upon runing your code, try:
-	- a) Constructing Simulation class with different parameters (default is: `int width = 80, int height = 40, int fontw = 8, int fonth = 10`)
-	- b) Changing your console window size in properties settings. (link how: https://youtu.be/xW8skO7MFYw?t=16m1s  (shown around 16. min mark)) 
+	1) Constructing Simulation class with different parameters (default is: `int width = 80, int height = 40, int fontw = 8, int fonth = 10`)
+	2) Changing your console window size in properties settings. (link how: https://youtu.be/xW8skO7MFYw?t=16m1s  (shown around 16. min mark)) 
 
 ## Usage
 - **You write code in _Simulation.cpp_ file**. It is seperated from everything else
