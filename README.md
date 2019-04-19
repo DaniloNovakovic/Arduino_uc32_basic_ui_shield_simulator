@@ -1,8 +1,18 @@
 # Arduino uc32 Basic UI Shield Simulator
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 The aim of this project is to help students who are learning Arduino, but unfortunately don't have money or are unable to find the hardware to learn on at home. With this simulator students can learn logic required for working with pins, switches, buttons and tasks. Output/Input/Loop are three separate detached tasks using logic which prevents common concurrent problems such as Data Race or Deadlock. This enables real-time response, which makes working with simulator feel like working with the real thing.
 
-## Installing
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Controls](#Controls)
+- [Support](#Support)
+- [License](#License)
+
+## Installation
 
 - [DOWNLOAD](https://github.com/DaniloNovakovic/Arduino_uc32_basic_ui_shield_simulator/archive/master.zip) project from github (you can't copy-paste code from github.com site because it contains special
 invisible characters that will not allow your program to compile)
@@ -23,10 +33,26 @@ so that you can focus only on `setup()` and `loop()` functions, just like when c
 
 > Note that i probably won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4.
 
-Controls:
+### Controls
   
 - 1,2,3,4 - SW4, SW3, SW2, SW1 (on/off) (or SW1,SW2,SW3,SW4 (press F1 to swap between these))
 - Q,W,E,R - BTN4, BTN3, BTN2, BTN1 (hold to on, release to off)
 - LEDs are ordered in descending order from left to right L08,L07,...,L01
 
 ![Console Output Preview](./doc/ArduinoSimulator.JPG)
+
+---
+
+## Support
+
+Reach out to me at one of the following places!
+
+- Website at [danilonovakovic.github.io](https://danilonovakovic.github.io/index.html)
+- Linkedin at [DaniloNovakovic](https://www.linkedin.com/in/danilo-novakovi%C4%87-821934167/)
+
+---
+
+## License
+
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2018 © [DaniloNovakovic](https://github.com/DaniloNovakovic)
