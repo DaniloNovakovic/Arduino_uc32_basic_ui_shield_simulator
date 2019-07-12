@@ -1,6 +1,9 @@
-# Arduino uc32 Basic UI Shield Simulator
+# Arduino uc32 Basic UI Shield Simulator (DEPRECATED)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
+> Due to poor code architecture and lack of tests this project is not going to be maintained, but it could still provide itself useful for educational purpose. Feel free to clone it and expand it yourself if you like the idea.
 
 The aim of this project is to help students who are learning Arduino, but unfortunately don't have money or are unable to find the hardware to learn on at home. With this simulator students can learn logic required for working with pins, switches, buttons and tasks. Output/Input/Loop are three separate detached tasks using logic which prevents common concurrent problems such as Data Race or Deadlock. This enables real-time response, which makes working with simulator feel like working with the real thing.
 
