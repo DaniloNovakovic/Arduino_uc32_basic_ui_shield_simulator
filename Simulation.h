@@ -20,4 +20,3 @@ private:
     virtual void setup() override;
     virtual void loop() override;
 };
-

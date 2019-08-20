@@ -10,22 +10,22 @@ enum TaskStates { TASK_ENABLE, TASK_DISABLE, TASK_RUN_ONCE, TASK_REMOVE };
 
 struct Task
 {
-	int id;
-	void* var;
-	unsigned long period;
-	unsigned short stat;
-	std::condition_variable cv;
+    int id;
+    void* var;
+    unsigned long period;
+    unsigned short stat;
+    std::condition_variable cv;
 
-	void(*func)(int, void*);
-	Task(void(*task_func)(int, void*), unsigned long task_period,
-		unsigned short task_stat, void* task_var = nullptr, int task_id = -1)
-	{
-		func = task_func;
-		id = task_id;
-		var = task_var;
-		stat = task_stat;
-		period = task_period;
-	}
+    void(*func)(int, void*);
+    Task(void(*task_func)(int, void*), unsigned long task_period,
+        unsigned short task_stat, void* task_var = nullptr, int task_id = -1)
+    {
+        func = task_func;
+        id = task_id;
+        var = task_var;
+        stat = task_stat;
+        period = task_period;
+    }
 };
 
 extern std::map<int, Task*> map_tasks;
