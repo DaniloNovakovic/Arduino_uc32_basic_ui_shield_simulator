@@ -1,4 +1,4 @@
-# Arduino uc32 Basic UI Shield Simulator (DEPRECATED)
+# Arduino uc32 Basic UI Shield Simulator
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
