@@ -56,47 +56,61 @@ so that you can focus only on `setup()` and `loop()` functions, just like when c
 
 ### Commands
 
-#### pinMode(*pin*, *mode*)
-
-Sets `pin` to certain mode (`INPUT`, `OUTPUT`, `INPUT_PULLUP`)
+**pinMode**(*pin*, *mode*) - Sets `pin` to certain mode (`INPUT`, `OUTPUT`, `INPUT_PULLUP`)
 
 > `INPUT_PULLUP` support is not yet implemented. It doesn't do anything in this current state of simulation class.
 
-#### digitalWrite(*pin*, *value*)
-
-Sets given `pin` to `value` (`LOW`, `HIGH`)
+**digitalWrite**(*pin*, *value*) - Sets given `pin` to `value` (`LOW`, `HIGH`)
 
 > `pin` given in params should be set to `OUTPUT` before calling this method.
 
-#### digitalRead(*pin*)
+**digitalRead**(*pin*) - Reads the state of `pin`. (*ON*/*OFF*) 
 
-> /** Reads the state of `pin`. (*ON*/*OFF*) */
+**delay**(*ms*) - Pauses process for `ms` number of milliseconds.
 
-#### delay(*ms*)
-
-Pauses process for `ms` number of milliseconds.
-
-#### executeSoftReset(*options*)
-
-Resets arduino chipset with specific options.
+**executeSoftReset**(*options*) - Resets simulated arduino chipset with specific options.
 
 Params supported: `RUN_SKETCH_ON_BOOT` - resets chipset
 
-> ENTER_BOOTLOADER_ON_BOOT is not yet implemented
+> `ENTER_BOOTLOADER_ON_BOOT` is not yet implemented
 
-#### millis()
+**millis**() - Returns number of milliseconds passed from the start of the simulation.
 
-Returns number of milliseconds passed from the start of the simulation.
+**random**(*howbig*) - Returns random number less then `howbig`
 
-#### random(*howbig*)
-
-Returns number less then 'howbig'
-
-#### random(*howsmall*, *howbig*)
-
-Returns number from closed interval [`howsmall`, `howbig`]
+**random**(*howsmall*, *howbig*) - Returns random number from closed interval [`howsmall`, `howbig`]
 
 ### Tasks
+
+**createTask**(*void(\*task_func)(int, void\*),task_period, task_stat, \*task_var*) - Creates new task if it doesn't already exist.
+
+Params:
+
+- `task_func` - Pointer to function which will be executed
+
+- `task_period` - Time in milliseconds after which `task_func` will repeat (be executed again)
+  
+- `task_stat` - Initial state of the task (`TASK_ENABLE`, `TASK_DISABLE`, or `TASK_RUN_ONCE`)
+
+- `task_var` - Initial parameter value of the task
+
+**destroyTask**(*id*) - kills (stops) the task with `id`
+
+**getTaskId**(*void(\*task_func)(int, void\*)*) - Returns `id` for given `task_func`, if no such task exists returns `-1`.
+
+**getTaskPeriod**(*id*) - Returns `period` for task with given `id`
+
+**getTaskState**(*id*) - Returns `state` for the task with given `id`
+
+**getTaskVar**(*id*) - Returns parameter value for task with given `id`
+
+**setTaskState**(*id*, *state*) - Sets `state` of task with given `id`.
+
+Supported task `state` values: `TASK_ENABLE, TASK_DISABLE, TASK_RUN_ONCE, TASK_REMOVE`
+
+**setTaskPeriod**(*id*, *period*) - sets `period` for task with the given `id`
+
+**setTaskVar**(*id*, *\*var*) - sets parameter value for task with given `id`
 
 ---
 
