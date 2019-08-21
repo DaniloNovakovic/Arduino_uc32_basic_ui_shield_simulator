@@ -12,6 +12,9 @@ The aim of this project is to help students who are learning Arduino, but unfort
 - [Installation](#installation)
 - [Usage](#usage)
   - [Controls](#Controls)
+- [API Reference](#API-Reference)
+  - [Commands](#Commands)
+  - [Tasks](#Taks)
 - [Support](#Support)
 - [License](#License)
 
@@ -34,7 +37,7 @@ Character Set -> Use Unicode._). If you forget don't worry, you will get error/w
 **You write code in _Simulation.cpp_ file**. It is seperated from everything else
 so that you can focus only on `setup()` and `loop()` functions, just like when coding in arduino
 
-> Note that i probably won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4.
+> Note that i won't be making full simulator, i will only be making features required for Embeded Computer Systems class from Applied Software Engineering departement in FTN. Which is basically only L01-L08, SW1-SW4, BTN1-BTN4.
 
 ### Controls
   
@@ -43,6 +46,57 @@ so that you can focus only on `setup()` and `loop()` functions, just like when c
 - LEDs are ordered in descending order from left to right L08,L07,...,L01
 
 ![Console Output Preview](./doc/ArduinoSimulator.JPG)
+
+---
+
+## API Reference
+
+- [Commands](#Commands)
+- [Tasks](#Tasks)
+
+### Commands
+
+#### pinMode(*pin*, *mode*)
+
+Sets `pin` to certain mode (`INPUT`, `OUTPUT`, `INPUT_PULLUP`)
+
+> `INPUT_PULLUP` support is not yet implemented. It doesn't do anything in this current state of simulation class.
+
+#### digitalWrite(*pin*, *value*)
+
+Sets given `pin` to `value` (`LOW`, `HIGH`)
+
+> `pin` given in params should be set to `OUTPUT` before calling this method.
+
+#### digitalRead(*pin*)
+
+> /** Reads the state of `pin`. (*ON*/*OFF*) */
+
+#### delay(*ms*)
+
+Pauses process for `ms` number of milliseconds.
+
+#### executeSoftReset(*options*)
+
+Resets arduino chipset with specific options.
+
+Params supported: `RUN_SKETCH_ON_BOOT` - resets chipset
+
+> ENTER_BOOTLOADER_ON_BOOT is not yet implemented
+
+#### millis()
+
+Returns number of milliseconds passed from the start of the simulation.
+
+#### random(*howbig*)
+
+Returns number less then 'howbig'
+
+#### random(*howsmall*, *howbig*)
+
+Returns number from closed interval [`howsmall`, `howbig`]
+
+### Tasks
 
 ---
 
