@@ -77,9 +77,8 @@ int digitalRead(PIN pin);
 
 /**
 Sets given 'pin' to 'value' (LOW, HIGH)
-@note: 'pin' given in params must be previously set to OUTPUT before
-calling this method. If it wasn't set on OUTPUT mode method will throw exception.
-(exception won't be thrown if m_bLearningMode is set to off)
+@note: `pin` given in params should be 
+set to `OUTPUT` before calling this method.
 */
 void digitalWrite(int pin, int value);
 void digitalWrite(PIN pin, int value);
@@ -121,7 +120,7 @@ int swIndex(int i);
     settings. To change these, class that ihnerits ArduinoSimulation_uC32 will have
     to call its constructor with different parameters.
 
-    @author Danilo Novakoviæ
+    @author Danilo Novakoviï¿½
     @version 0.5.1   5/25/2018
 */
 class ArduinoSimulation_uC32 : private olcConsoleGameEngine
