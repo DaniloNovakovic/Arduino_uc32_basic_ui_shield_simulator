@@ -58,27 +58,27 @@ Represents list of supported (simulated) functions from Arduino
 
 ### Commands
 
-<a name="pinMode" href="#pinMode">#</a> **pinMode**(*pin*, *mode*)
+<a name="pinMode" href="#pinMode">#</a> **pinMode**(*pin*, *mode*) [<>](./das.cpp#L53 "Source")
 
 Sets `pin` to certain mode (`INPUT`, `OUTPUT`, `INPUT_PULLUP`)
 
 > `INPUT_PULLUP` support is not yet implemented. It doesn't do anything in this current state of simulation class.
 
-<a name="digitalWrite" href="#digitalWrite">#</a> **digitalWrite**(*pin*, *value*)
+<a name="digitalWrite" href="#digitalWrite">#</a> **digitalWrite**(*pin*, *value*) [<>](./das.cpp#L60 "Source")
 
 Sets given `pin` to `value` (`LOW`, `HIGH`)
 
 > `pin` given in params should be set to `OUTPUT` before calling this method.
 
-<a name="digitalRead" href="#digitalRead">#</a> **digitalRead**(*pin*)
+<a name="digitalRead" href="#digitalRead">#</a> **digitalRead**(*pin*) [<>](./das.cpp#L69 "Source")
 
 Reads the state of `pin`. (*ON*/*OFF*)
 
-<a name="delay" href="#delay">#</a> **delay**(*ms*)
+<a name="delay" href="#delay">#</a> **delay**(*ms*) [<>](./das.cpp#L84 "Source")
 
 Pauses process for `ms` number of milliseconds.
 
-<a name="executeSoftReset" href="#executeSoftReset">#</a> **executeSoftReset**(*options*)
+<a name="executeSoftReset" href="#executeSoftReset">#</a> **executeSoftReset**(*options*) [<>](./das.cpp#L40 "Source")
 
 Resets simulated arduino chipset with specific options.
 
@@ -86,15 +86,15 @@ Params supported: `RUN_SKETCH_ON_BOOT` - resets chipset
 
 > `ENTER_BOOTLOADER_ON_BOOT` is not yet implemented
 
-<a name="millis" href="#millis">#</a> **millis**()
+<a name="millis" href="#millis">#</a> **millis**() [<>](./das.cpp#L106 "Source")
 
 Returns number of milliseconds passed from the start of the simulation.
 
-<a name="random" href="#random">#</a> **random**(*howbig*)
+<a name="random" href="#random">#</a> **random**(*howbig*) [<>](./das.cpp#L88 "Source")
 
 Returns random number less then `howbig`
 
-<a name="random" href="#random">#</a> **random**(*howsmall*, *howbig*)
+<a name="random" href="#random">#</a> **random**(*howsmall*, *howbig*) [<>](./das.cpp#L96 "Source")
 
 Returns random number from closed interval [`howsmall`, `howbig`]
 
