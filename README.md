@@ -58,27 +58,27 @@ Represents list of supported (simulated) functions from Arduino
 
 ### Commands
 
-**pinMode**(*pin*, *mode*)
+<a name="pinMode" href="#pinMode">#</a> **pinMode**(*pin*, *mode*)
 
 Sets `pin` to certain mode (`INPUT`, `OUTPUT`, `INPUT_PULLUP`)
 
 > `INPUT_PULLUP` support is not yet implemented. It doesn't do anything in this current state of simulation class.
 
-**digitalWrite**(*pin*, *value*)
+<a name="digitalWrite" href="#digitalWrite">#</a> **digitalWrite**(*pin*, *value*)
 
 Sets given `pin` to `value` (`LOW`, `HIGH`)
 
 > `pin` given in params should be set to `OUTPUT` before calling this method.
 
-**digitalRead**(*pin*)
+<a name="digitalRead" href="#digitalRead">#</a> **digitalRead**(*pin*)
 
 Reads the state of `pin`. (*ON*/*OFF*)
 
-**delay**(*ms*)
+<a name="delay" href="#delay">#</a> **delay**(*ms*)
 
 Pauses process for `ms` number of milliseconds.
 
-**executeSoftReset**(*options*)
+<a name="executeSoftReset" href="#executeSoftReset">#</a> **executeSoftReset**(*options*)
 
 Resets simulated arduino chipset with specific options.
 
@@ -86,21 +86,21 @@ Params supported: `RUN_SKETCH_ON_BOOT` - resets chipset
 
 > `ENTER_BOOTLOADER_ON_BOOT` is not yet implemented
 
-**millis**()
+<a name="millis" href="#millis">#</a> **millis**()
 
 Returns number of milliseconds passed from the start of the simulation.
 
-**random**(*howbig*)
+<a name="random" href="#random">#</a> **random**(*howbig*)
 
 Returns random number less then `howbig`
 
-**random**(*howsmall*, *howbig*)
+<a name="random" href="#random">#</a> **random**(*howsmall*, *howbig*)
 
 Returns random number from closed interval [`howsmall`, `howbig`]
 
 ### Tasks
 
-**createTask**(*void(\*task_func)(int, void\*),task_period, task_stat, \*task_var*)
+<a name="createTask" href="#createTask">#</a> **createTask**(*void(\*task_func)(int, void\*),task_period, task_stat, \*task_var*)
 
 Creates new task if it doesn't already exist.
 
@@ -114,37 +114,37 @@ Params:
 
 - `task_var` - Initial parameter value of the task
 
-**destroyTask**(*id*)
+<a name="destroyTask" href="#destroyTask">#</a> **destroyTask**(*id*)
 
 Kills (stops) the task with `id`
 
-**getTaskId**(*void(\*task_func)(int, void\*)*)
+<a name="getTaskId" href="#getTaskId">#</a> **getTaskId**(*void(\*task_func)(int, void\*)*)
 
 Returns `id` for given `task_func`, if no such task exists returns `-1`.
 
-**getTaskPeriod**(*id*)
+<a name="getTaskPeriod" href="#getTaskPeriod">#</a> **getTaskPeriod**(*id*)
 
 Returns `period` for task with given `id`
 
-**getTaskState**(*id*)
+<a name="getTaskState" href="#getTaskState">#</a> **getTaskState**(*id*)
 
 Returns `state` for the task with given `id`
 
-**getTaskVar**(*id*)
+<a name="getTaskVar" href="#getTaskVar">#</a> **getTaskVar**(*id*)
 
 Returns parameter value for task with given `id`
 
-**setTaskState**(*id*, *state*)
+<a name="setTaskState" href="#setTaskState">#</a> **setTaskState**(*id*, *state*)
 
 Sets `state` of task with given `id`.
 
 Supported task `state` values: `TASK_ENABLE, TASK_DISABLE, TASK_RUN_ONCE, TASK_REMOVE`
 
-**setTaskPeriod**(*id*, *period*)
+<a name="setTaskPeriod" href="#setTaskPeriod">#</a> **setTaskPeriod**(*id*, *period*)
 
 Sets `period` for task with the given `id`
 
-**setTaskVar**(*id*, *\*var*)
+<a name="setTaskVar" href="#setTaskVar">#</a> **setTaskVar**(*id*, *\*var*)
 
 Sets parameter value for task with given `id`
 
