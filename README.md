@@ -51,6 +51,8 @@ so that you can focus only on `setup()` and `loop()` functions, just like when c
 
 ## API Reference
 
+Represents list of supported (simulated) functions from Arduino
+
 - [Commands](#Commands)
 - [Tasks](#Tasks)
 
@@ -64,7 +66,7 @@ so that you can focus only on `setup()` and `loop()` functions, just like when c
 
 > `pin` given in params should be set to `OUTPUT` before calling this method.
 
-**digitalRead**(*pin*) - Reads the state of `pin`. (*ON*/*OFF*) 
+**digitalRead**(*pin*) - Reads the state of `pin`. (*ON*/*OFF*)
 
 **delay**(*ms*) - Pauses process for `ms` number of milliseconds.
 
