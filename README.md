@@ -100,7 +100,7 @@ Returns random number from closed interval [`howsmall`, `howbig`]
 
 ### Tasks
 
-<a name="createTask" href="#createTask">#</a> **createTask**(*void(\*task_func)(int, void\*),task_period, task_stat, \*task_var*)
+<a name="createTask" href="#createTask">#</a> **createTask**(*void(\*task_func)(int, void\*),task_period, task_stat, \*task_var*) [<>](./tasks.cpp#L121 "Source")
 
 Creates new task if it doesn't already exist.
 
@@ -114,37 +114,37 @@ Params:
 
 - `task_var` - Initial parameter value of the task
 
-<a name="destroyTask" href="#destroyTask">#</a> **destroyTask**(*id*)
+<a name="destroyTask" href="#destroyTask">#</a> **destroyTask**(*id*) [<>](./tasks.cpp#L135 "Source")
 
 Kills (stops) the task with `id`
 
-<a name="getTaskId" href="#getTaskId">#</a> **getTaskId**(*void(\*task_func)(int, void\*)*)
+<a name="getTaskId" href="#getTaskId">#</a> **getTaskId**(*void(\*task_func)(int, void\*)*) [<>](./tasks.cpp#L75 "Source")
 
 Returns `id` for given `task_func`, if no such task exists returns `-1`.
 
-<a name="getTaskPeriod" href="#getTaskPeriod">#</a> **getTaskPeriod**(*id*)
+<a name="getTaskPeriod" href="#getTaskPeriod">#</a> **getTaskPeriod**(*id*) [<>](./tasks.cpp#L88 "Source")
 
 Returns `period` for task with given `id`
 
-<a name="getTaskState" href="#getTaskState">#</a> **getTaskState**(*id*)
+<a name="getTaskState" href="#getTaskState">#</a> **getTaskState**(*id*) [<>](./tasks.cpp#L99 "Source")
 
 Returns `state` for the task with given `id`
 
-<a name="getTaskVar" href="#getTaskVar">#</a> **getTaskVar**(*id*)
+<a name="getTaskVar" href="#getTaskVar">#</a> **getTaskVar**(*id*) [<>](./tasks.cpp#L110 "Source")
 
 Returns parameter value for task with given `id`
 
-<a name="setTaskState" href="#setTaskState">#</a> **setTaskState**(*id*, *state*)
+<a name="setTaskState" href="#setTaskState">#</a> **setTaskState**(*id*, *state*) [<>](./tasks.cpp#L44 "Source")
 
 Sets `state` of task with given `id`.
 
 Supported task `state` values: `TASK_ENABLE, TASK_DISABLE, TASK_RUN_ONCE, TASK_REMOVE`
 
-<a name="setTaskPeriod" href="#setTaskPeriod">#</a> **setTaskPeriod**(*id*, *period*)
+<a name="setTaskPeriod" href="#setTaskPeriod">#</a> **setTaskPeriod**(*id*, *period*) [<>](./tasks.cpp#L56 "Source")
 
 Sets `period` for task with the given `id`
 
-<a name="setTaskVar" href="#setTaskVar">#</a> **setTaskVar**(*id*, *\*var*)
+<a name="setTaskVar" href="#setTaskVar">#</a> **setTaskVar**(*id*, *\*var*) [<>](./tasks.cpp#L65 "Source")
 
 Sets parameter value for task with given `id`
 
